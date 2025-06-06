@@ -17,7 +17,7 @@ export default function BoardsPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
       < Content style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
         {

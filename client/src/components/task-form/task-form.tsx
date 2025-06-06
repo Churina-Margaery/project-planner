@@ -1,5 +1,31 @@
 // src/components/TaskFormDrawer.tsx
 import { Drawer, Form, Input, Select, Button, Space } from 'antd';
+import styled from 'styled-components';
+
+
+const ButtonStyled = styled(Button)`
+  border: none !important;
+  padding: 14px 32px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: background 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px !important;
+    padding: 0 24px !important;
+  }
+
+  &:hover,
+  &:focus {
+    transform: scale(1.07);
+    background: #000 !important;
+    -color: ${colors.white} !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+  };
+`;
 
 export interface TaskFormValues {
   title: string;
@@ -68,7 +94,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {showGotoBoard && <Button>Перейти на доску</Button>}
+          {showGotoBoard && <ButtonStyled>Перейти на доску</ButtonStyled>}
           <Button type="primary" htmlType="submit">Создать/обновить</Button>
         </Space>
       </Form>

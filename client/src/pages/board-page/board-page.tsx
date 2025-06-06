@@ -14,7 +14,7 @@ export default function BoardPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
       <Content style={{ padding: 24 }}>
         <h2 style={{ marginBottom: 24 }}>Название проекта {id}</h2>

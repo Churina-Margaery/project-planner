@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Layout, Input, Button, List, Space, Row, Col } from 'antd';
 import { Navigation } from '../../components/header/navigation';
 import { TaskForm } from '../../components/task-form/task-form';
+import styled from 'styled-components';
 
 const { Content } = Layout;
 
@@ -12,7 +13,7 @@ export default function IssuesPage() {
   const data = ['Задача 1', 'Задача 2', 'Задача 3'];
 
   return (
-    <Layout>
+    <Layout style={{ minWidth: '100vh', minWigth: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
       <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
         <Row gutter={16} style={{ marginBottom: 16 }}>
