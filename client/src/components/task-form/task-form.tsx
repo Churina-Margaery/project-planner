@@ -7,24 +7,25 @@ const ButtonStyled = styled(Button)`
   border: none !important;
   padding: 14px 32px !important;
   font-size: 16px !important;
-  font-weight: 600 !important;
-  border-radius: 12px !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
-  transition: background 0.3s ease;
-
-  @media (max-width: 768px) {
-    font-size: 16px !important;
-    padding: 0 24px !important;
-  }
+  transition: background 0.3s, border 0.2s;
+  color: #111 !important;
+  
 
   &:hover,
+  &:focus-visible {
+    border: 2px solid var(--accent) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: var(--accent-dark) !important;
+    background: #f6f3ff;
+  }
+
   &:focus {
-    transform: scale(1.07);
-    background: #000 !important;
-    -color: $000 !important;
-    border: none !important;
-    transition: all 0.3s ease !important;
-  };
+    outline: none !important;
+    box-shadow: none !important;
+  }
 `;
 
 export interface TaskFormValues {

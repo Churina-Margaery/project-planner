@@ -25,7 +25,7 @@ export const Navigation: React.FC<Props> = ({ onCreateClick }) => {
         <NavLink to="/boards" $active={pathname.startsWith('/boards') || pathname.startsWith('/board')}>Проекты</NavLink>
       </div>
 
-      <Button type="primary" onClick={onCreateClick}>Создать задачу</Button>
+      <Button style={{ margin: '20px' }} type="primary" onClick={onCreateClick}>Создать задачу</Button>
     </Header>
   );
 };

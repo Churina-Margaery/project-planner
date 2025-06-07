@@ -35,7 +35,7 @@ export default function IssuesPage() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto', background: '#f6f6fa' }}>
+      <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
         <Row gutter={16} style={{ marginBottom: 32 }}>
           <Col flex="auto">
             <Input.Search placeholder="Поиск" allowClear size="large" />
