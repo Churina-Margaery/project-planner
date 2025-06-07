@@ -5,6 +5,7 @@ import { Navigation } from "../../components/header/navigation";
 import { TaskForm } from "../../components/task-form/task-form";
 import { getTasks } from "../../services/api/tasks";
 import type { Task } from "../../services/api/types";
+import type { TaskFormValues } from "../../components/task-form/task-form";
 
 const { Content } = Layout;
 
@@ -31,9 +32,25 @@ const TaskCard = styled(Card)`
 
 export default function IssuesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [initialValues, setInitinalValues] = useState<Partial<TaskFormValues> | undefined>(undefined);
+  const [reloadKey, setReloadKey] = useState(0);
+  const reloadTasks = () => setReloadKey((k) => k + 1);
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const cardClickHandler = (task: Task) => {
+    setDrawerOpen(true);
+    setInitinalValues({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      boardId: task.boardId,
+      priority: task.priority,
+      status: task.status,
+      assigneeId: task.assignee?.id,
+    });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -42,7 +59,8 @@ export default function IssuesPage() {
       .then(setTasks)
       .catch((e) => setError(e?.message || "Ошибка загрузки"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [reloadKey]); // <--- теперь useEffect будет вызываться при изменении reloadKey
+
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -63,7 +81,7 @@ export default function IssuesPage() {
         )}
 
         {!loading && !error && tasks.map((task) => (
-          <TaskCard key={task.id} onClick={() => setDrawerOpen(true)}>
+          <TaskCard key={task.id} onClick={() => cardClickHandler(task)}>
             {task.title}
           </TaskCard>
         ))}
@@ -76,9 +94,14 @@ export default function IssuesPage() {
       </Content>
 
       <TaskForm
+        key={drawerOpen + JSON.stringify(initialValues ?? {})}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={() => { }}
+        initialValues={initialValues}
+        onClose={() => {
+          setDrawerOpen(false);
+          setInitinalValues(undefined);
+          reloadTasks();
+        }}
         showGotoBoard
       />
     </Layout>

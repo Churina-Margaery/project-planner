@@ -15,7 +15,7 @@ export interface Task {
   description: string;
   status: "Backlog" | "InProgress" | "Done";
   priority: "Low" | "Medium" | "High";
-  assignee?: AssigneeUser;
+  assignee?: User;
   boardId?: number;
   boardName?: string;
 }
@@ -24,10 +24,17 @@ export interface TasksResponse {
   data: Task[];
 }
 
-export interface AssigneeUser {
+export interface UsersResponse {
+  data: User[];
+}
+
+export interface User {
   id: number;
   fullName: string;
   email: string;
-  avatarUrl?: string;
+  avatarUrl: string;
+  description: string,
+  tasksCount: number,
+  teamId: number,
+  teamName: string,
 }
-
