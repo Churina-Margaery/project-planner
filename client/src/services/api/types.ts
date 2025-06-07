@@ -5,6 +5,10 @@ export interface Board {
   taskCount: number;
 }
 
+export interface BoardsResponse {
+  data: Board[];
+}
+
 export interface Task {
   id: number;
   title: string;

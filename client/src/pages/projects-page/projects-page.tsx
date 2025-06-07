@@ -1,46 +1,68 @@
 import { useState } from 'react';
-import { Layout, Card } from 'antd';
+import { Layout, Card, Spin, Typography } from 'antd';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useEffect } from 'react';
+
 import { Navigation } from '../../components/header/navigation';
 import { TaskForm } from '../../components/task-form/task-form';
-import { Link } from 'react-router-dom';
+import { getBoards } from '../../services/api/boards';
+import type { Board } from '../../services/api/types';
 
 const { Content } = Layout;
 
 const BoardCard = styled(Card)`
   margin-bottom: 16px;
-  display: flex;
-  justify-content: space-between !important;
+  border-radius: 8px;
 
   .ant-card-body {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 30px 10px;
-    gap: 60px;
+    padding-left: 32px;
+    padding-right: 32px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    gap: 30px;
     width: 100%;
   }
 `;
 
 const StyledLink = styled(Link)`
-  color: var(--accent-dark);
+  margin-left: auto; // всегда прижимает к правому краю
 `;
 
 export default function BoardsPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    getBoards()
+      .then(setBoards)
+      .catch((e) => setError(e?.message || 'Ошибка загрузки проектов'))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      < Content style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
-        {
-          [1, 2, 3, 34567, 456789, 4567, 3456, 1234, 234567, 789].map((id) => (
-            <BoardCard key={id} >
-              <span>Название проекта {id} </span>
-              <StyledLink to={`/board/${id}`}>Перейти к доске</StyledLink>
-            </BoardCard>
-          ))
-        }
+      <Content style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
+        {loading && <Spin />}
+        {error && <Typography.Text type="danger">{error}</Typography.Text>}
+
+        {!loading && !error && boards.map((board) => (
+          <BoardCard key={board.id}>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 18 }}>{board.name}</div>
+              <div style={{ color: '#888', marginTop: 4, marginBottom: 4 }}>{board.description}</div>
+              <div style={{ color: '#b89cff' }}>Задач: {board.taskCount}</div>
+            </div>
+            <StyledLink to={`/board/${board.id}`}>Перейти к доске</StyledLink>
+          </BoardCard>
+        ))}
       </Content>
 
       < TaskForm open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => { }} />

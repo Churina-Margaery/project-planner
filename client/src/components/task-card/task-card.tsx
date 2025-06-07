@@ -2,7 +2,7 @@
 import { Card } from 'antd';
 import styled from 'styled-components';
 
-export const TaskCard = styled(Card).attrs({ size: 'small', bordered: true }) <{ onClick?: () => void }>`
+export const TaskCard = styled(Card).attrs({ size: 'small' }) <{ onClick?: () => void }>`
   margin-bottom: 12px;
   cursor: pointer;
   user-select: none;
