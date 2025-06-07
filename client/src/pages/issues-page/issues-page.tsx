@@ -49,6 +49,7 @@ export default function IssuesPage() {
       priority: task.priority,
       status: task.status,
       assigneeId: task.assignee?.id,
+      boardName: task.boardName,
     });
   };
 
@@ -59,7 +60,7 @@ export default function IssuesPage() {
       .then(setTasks)
       .catch((e) => setError(e?.message || "Ошибка загрузки"))
       .finally(() => setLoading(false));
-  }, [reloadKey]); // <--- теперь useEffect будет вызываться при изменении reloadKey
+  }, [reloadKey]);
 
 
   return (

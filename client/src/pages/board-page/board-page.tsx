@@ -1,23 +1,32 @@
-// src/pages/BoardPage.tsx
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Layout, Space, Spin, Typography } from 'antd';
+
 import { Navigation } from '../../components/header/navigation';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { TaskCard } from '../../components/task-card/task-card';
 import { TaskForm } from '../../components/task-form/task-form';
-import type { Task } from '../../services/api/types';
-import { getBoardTasks } from '../../services/api/boards';
+import type { Board, Task } from '../../services/api/types';
+import type { TaskFormValues } from '../../components/task-form/task-form';
+import { getBoards, getBoardTasks } from '../../services/api/boards';
 
 const { Content } = Layout;
 export default function BoardPage() {
   const { id } = useParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [initialValues, setInitialValues] = useState<Partial<TaskFormValues> | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [boards, setBoards] = useState<Board[]>([]);
 
   useEffect(() => {
+    getBoards().then(setBoards);
+  }, []);
+
+  const board = boards.find(b => b.id === Number(id));
+
+  const fetchTasks = () => {
     if (!id) return;
     setLoading(true);
     setError(null);
@@ -25,7 +34,31 @@ export default function BoardPage() {
       .then(setTasks)
       .catch((e) => setError(e?.message || 'Ошибка загрузки задач'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const handleCardClick = (task: Task) => {
+    setDrawerOpen(true);
+    setInitialValues({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      boardId: task.boardId,
+      priority: task.priority,
+      status: task.status,
+      assigneeId: task.assignee?.id,
+      boardName: task.boardName
+    });
+  };
+
+  const handleCreateClick = () => {
+    setDrawerOpen(true);
+    setInitialValues({ boardId: Number(id) });
+  };
 
   const todo = tasks.filter(t => t.status === 'Backlog');
   const inProgress = tasks.filter(t => t.status === 'InProgress');
@@ -33,9 +66,9 @@ export default function BoardPage() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Navigation onCreateClick={() => setDrawerOpen(true)} />
+      <Navigation onCreateClick={handleCreateClick} />
       <Content style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
-        <h2 style={{ marginBottom: 24 }}>Название проекта {id}</h2>
+        <h2 style={{ marginBottom: 24 }}>{board?.name}</h2>
 
         {loading && <Spin />}
         {error && <Typography.Text type="danger">{error}</Typography.Text>}
@@ -44,21 +77,21 @@ export default function BoardPage() {
           <Space align="start" size={16} style={{ display: 'flex' }}>
             <BoardColumn title="To do">
               {todo.map((task) => (
-                <TaskCard key={task.id} onClick={() => setDrawerOpen(true)}>
+                <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>
               ))}
             </BoardColumn>
             <BoardColumn title="In progress">
               {inProgress.map((task) => (
-                <TaskCard key={task.id} onClick={() => setDrawerOpen(true)}>
+                <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>
               ))}
             </BoardColumn>
             <BoardColumn title="Done">
               {done.map((task) => (
-                <TaskCard key={task.id} onClick={() => setDrawerOpen(true)}>
+                <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>
               ))}
@@ -69,9 +102,12 @@ export default function BoardPage() {
 
       <TaskForm
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={() => { }}
-        initialValues={{ projectId: id }}
+        onClose={() => {
+          setDrawerOpen(false);
+          setInitialValues(undefined);
+          fetchTasks();
+        }}
+        initialValues={initialValues}
         projectLocked
       />
     </Layout>

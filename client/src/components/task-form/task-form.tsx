@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { updateTask, createTask } from '../../services/api/tasks';
 import { getBoards } from '../../services/api/boards';
 import { getUsers } from '../../services/api/users';
+import type { Board, User } from '../../services/api/types';
 
 export interface TaskFormValues {
   id: number;
@@ -14,6 +15,7 @@ export interface TaskFormValues {
   priority: "Low" | "Medium" | "High";
   status: "Backlog" | "InProgress" | "Done";
   assigneeId: number;
+  boardName: string;
 }
 
 interface Props {
@@ -33,8 +35,8 @@ export const TaskForm: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
-  const [users, setUsers] = useState<any[]>([]);
-  const [boards, setBoards] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [boards, setBoards] = useState<Board[]>([]);
   const priorityOptions = [
     { value: 'Low', label: 'Low' },
     { value: 'Medium', label: 'Medium' },
@@ -51,17 +53,25 @@ export const TaskForm: React.FC<Props> = ({
     getBoards().then(setBoards);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      form.setFieldsValue(initialValues || {});
+    }
+  }, [open, initialValues, form]);
+
   // Обработчик формы
   const handleFinish = async (values: TaskFormValues) => {
     setSaving(true);
     try {
-      console.log(values);
+      const board = boards.find(b => b.id === values.boardId);
+      console.log(board?.name);
+      const dataToSend = { ...values, boardName: board?.name ?? "" };
       if (initialValues) {
-        await updateTask(Number(initialValues.id), values);
+        await updateTask(Number(initialValues.id), dataToSend);
       } else {
-        await createTask(values);
+        await createTask(dataToSend);
       }
-      console.log(values);
+      console.log(3, values);
       onClose();
       // TODO обновить задачи в родителе
     } catch (err) {
