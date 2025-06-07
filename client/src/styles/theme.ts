@@ -27,9 +27,12 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   .ant-btn-primary:hover,
-  .ant-btn-primary:focus {
+  .ant-btn-primary:focus, {
     transform: scale(1.07);
     border: none !important;
     transition: all 0.3s ease !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: var(--accent-dark) 1px solid !important;
   };
 `;

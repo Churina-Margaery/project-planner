@@ -1,49 +1,60 @@
-// src/pages/IssuesPage.tsx
 import { useState } from 'react';
-import { Layout, Input, Button, List, Space, Row, Col } from 'antd';
+import { Layout, Button, Row, Col, Input, Space, Card } from 'antd';
+import styled from 'styled-components';
 import { Navigation } from '../../components/header/navigation';
 import { TaskForm } from '../../components/task-form/task-form';
-import styled from 'styled-components';
 
 const { Content } = Layout;
+
+const TaskCard = styled(Card)`
+  margin-bottom: 16px;
+  display: flex;
+  border-radius: 8px;
+
+  .ant-card-body {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding: 30px 24px;
+    width: 100%;
+    background: transparent;
+  }
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+`;
 
 export default function IssuesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-
-  const data = ['Задача 1', 'Задача 2', 'Задача 3'];
+  const data = ['Задача 1', 'Задача 2', 'Задача 3', 'Большая задача', 'Очень длинное название задачи Очень длинное название задачи'];
 
   return (
-    <Layout style={{ minWidth: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
-        <Row gutter={16} style={{ marginBottom: 16 }}>
+      <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto', background: '#f6f6fa' }}>
+        <Row gutter={16} style={{ marginBottom: 32 }}>
           <Col flex="auto">
-            <Input.Search placeholder="Поиск" allowClear />
+            <Input.Search placeholder="Поиск" allowClear size="large" />
           </Col>
           <Col>
-            <Button>Фильтры</Button>
+            <Button size="large">Фильтры</Button>
           </Col>
         </Row>
 
-        <List
-          bordered
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item style={{ padding: 0 }}>
-              <Button
-                type="text"
-                style={{ width: '100%', textAlign: 'left', padding: '12px 16px' }}
-                onClick={() => setDrawerOpen(true)}
-              >
-                {item}
-              </Button>
-            </List.Item>
-          )}
-        />
+        {data.map((item, i) => (
+          <TaskCard key={i} onClick={() => setDrawerOpen(true)}>
+            {item}
+          </TaskCard>
+        ))}
 
-        <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: 16 }}>
-          <Button type="primary" onClick={() => setDrawerOpen(true)}>Создать задачу</Button>
+        <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: 32 }}>
+          <Button type="primary" size="large" onClick={() => setDrawerOpen(true)}>
+            Создать задачу
+          </Button>
         </Space>
       </Content>
 
@@ -53,6 +64,6 @@ export default function IssuesPage() {
         onSubmit={() => { }}
         showGotoBoard
       />
-    </Layout >
+    </Layout>
   );
 }

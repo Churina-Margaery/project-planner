@@ -16,7 +16,7 @@ export default function BoardPage() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      <Content style={{ padding: 24 }}>
+      <Content style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
         <h2 style={{ marginBottom: 24 }}>Название проекта {id}</h2>
 
         <Space align="start" size={16} style={{ display: 'flex' }}>

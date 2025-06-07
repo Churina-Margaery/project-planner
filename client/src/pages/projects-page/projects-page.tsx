@@ -22,6 +22,10 @@ const BoardCard = styled(Card)`
   }
 `;
 
+const StyledLink = styled(Link)`
+  color: var(--accent-dark);
+`;
+
 export default function BoardsPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -33,8 +37,7 @@ export default function BoardsPage() {
           [1, 2, 3, 34567, 456789, 4567, 3456, 1234, 234567, 789].map((id) => (
             <BoardCard key={id} >
               <span>Название проекта {id} </span>
-              {/* < Button type="link" > Перейти к доске </Button> */}
-              <Link to={`/board/${id}`}>Перейти к доске</Link>
+              <StyledLink to={`/board/${id}`}>Перейти к доске</StyledLink>
             </BoardCard>
           ))
         }
