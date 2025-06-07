@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle`
     --accent: ${ACCENT};
     --accent-dark: ${ACCENT_DARK};
     --text-main: #000;
-    --bg-main:  #fff;
+    --bg-main:  #f5f5f5 !important;
   }
 
   body {

@@ -10,10 +10,11 @@ const { Content } = Layout;
 export default function IssuesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const data = ['Задача 1', 'Задача 2', 'Задача 3'];
+
+  const data = ['Задача 1', 'Задача 2', 'Задача 3'];
 
   return (
-    <Layout style={{ minWidth: '100vh', minWigth: '100vh' }}>
+    <Layout style={{ minWidth: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
       <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
         <Row gutter={16} style={{ marginBottom: 16 }}>
@@ -30,7 +31,11 @@ export default function IssuesPage() {
           dataSource={data}
           renderItem={(item) => (
             <List.Item style={{ padding: 0 }}>
-              <Button type="text" style={{ width: '100%', textAlign: 'left', padding: '12px 16px' }}>
+              <Button
+                type="text"
+                style={{ width: '100%', textAlign: 'left', padding: '12px 16px' }}
+                onClick={() => setDrawerOpen(true)}
+              >
                 {item}
               </Button>
             </List.Item>
@@ -48,6 +53,6 @@ export default function IssuesPage() {
         onSubmit={() => { }}
         showGotoBoard
       />
-    </Layout>
+    </Layout >
   );
 }

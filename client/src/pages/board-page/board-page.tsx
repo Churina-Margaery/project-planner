@@ -21,7 +21,7 @@ export default function BoardPage() {
 
         <Space align="start" size={16} style={{ display: 'flex' }}>
           <BoardColumn title="To do">
-            <TaskCard>Задача 1</TaskCard>
+            <TaskCard onClick={() => setDrawerOpen(true)} >Задача 1</TaskCard>
             <TaskCard>Задача 3</TaskCard>
           </BoardColumn>
 

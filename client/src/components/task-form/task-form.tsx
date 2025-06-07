@@ -21,7 +21,7 @@ const ButtonStyled = styled(Button)`
   &:focus {
     transform: scale(1.07);
     background: #000 !important;
-    -color: ${colors.white} !important;
+    -color: $000 !important;
     border: none !important;
     transition: all 0.3s ease !important;
   };

@@ -13,7 +13,6 @@ const AppContainer = styled.div`
   min-width: 100vw;
   display: flex;
   flex: 1;
-  background: #fff;
   overflow: auto;
 `;
 
