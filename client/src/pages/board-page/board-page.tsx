@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Layout, Space, Spin, Typography } from 'antd';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 import { Navigation } from '../../components/header/navigation';
 import { BoardColumn } from '../../components/board-column/board-column';
@@ -13,12 +13,19 @@ import { getBoards, getBoardTasks } from '../../services/api/boards';
 const { Content } = Layout;
 export default function BoardPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+
+  const params = new URLSearchParams(location.search);
+  const openTaskId = params.get('task');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [initialValues, setInitialValues] = useState<Partial<TaskFormValues> | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [boards, setBoards] = useState<Board[]>([]);
+  const [wasTaskOpened, setWasTaskOpened] = useState(false);
 
   useEffect(() => {
     getBoards().then(setBoards);
@@ -41,8 +48,27 @@ export default function BoardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    if (!tasks.length || !openTaskId || drawerOpen) return;
+    const task = tasks.find(t => t.id === Number(openTaskId));
+    if (task) {
+      setInitialValues({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        boardId: Number(id),
+        priority: task.priority,
+        status: task.status,
+        assigneeId: task.assignee?.id,
+        boardName: task.boardName,
+      });
+      setDrawerOpen(true);
+      setWasTaskOpened(true);
+    }
+  }, [tasks, openTaskId, wasTaskOpened, id, drawerOpen]);
+
   const handleCardClick = (task: Task) => {
-    setDrawerOpen(true);
+    if (openTaskId) return;
     setInitialValues({
       id: task.id,
       title: task.title,
@@ -51,9 +77,17 @@ export default function BoardPage() {
       priority: task.priority,
       status: task.status,
       assigneeId: task.assignee?.id,
-      boardName: task.boardName
+      boardName: task.boardName,
     });
+    setDrawerOpen(true);
   };
+
+  useEffect(() => {
+    if (drawerOpen && openTaskId) {
+      navigate(`/board/${id}`, { replace: true });
+    }
+  }, [drawerOpen, openTaskId, id, navigate]);
+
 
   const handleCreateClick = () => {
     setInitialValues(undefined);
@@ -111,6 +145,7 @@ export default function BoardPage() {
         initialValues={initialValues}
         projectLocked
       />
+
     </Layout>
   );
 }

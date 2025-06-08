@@ -1,6 +1,7 @@
 import { Drawer, Form, Input, Select, Button, Space } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { updateTask, createTask } from '../../services/api/tasks';
 import { getBoards } from '../../services/api/boards';
@@ -75,6 +76,11 @@ export const TaskForm: React.FC<Props> = ({
   }, [open, initialValues, boards, form]);
 
 
+  const navigate = useNavigate();
+  const handleGotoBoard = () => {
+    navigate(`/board/${initialValues?.boardId}?task=${initialValues?.id}`);
+  };
+
   // Обработчик формы
   const handleFinish = async (values: TaskFormValues) => {
     setSaving(true);
@@ -144,7 +150,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {showGotoBoard && <NavLink to={`/board/${boardIdCur}`}>Перейти на доску</NavLink>}
+          {showGotoBoard && <Button onClick={handleGotoBoard}>Перейти на доску</Button>}
           <Button type="primary" htmlType="submit">{initialValues ? 'Обновить' : 'Создать'}</Button>
         </Space>
       </Form>
