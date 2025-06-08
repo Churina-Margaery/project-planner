@@ -8,16 +8,22 @@
 ### Запуск
 1. Клонирование репозитория  
 ```git clone https://github.com/Churina-Margaery/project-planner```
-2. Установка зависимостей  
+2. Создать файл .env (пример .env.example)
+3. ```docker compose build```
+4. ```docker compose up```  
+
+или
+
+1. Установка зависимостей  
 ```npm install```  
 (описание для бэкенда в папке server)
 
-4. Запуск клиентской части  
+2. Запуск клиентской части  
 - Создать ```.env``` файл с адресом сервера.
 ```VITE_SERVER=http://localhost:8080/api/v1```
 - В папке client:  
-```npm run dev```
-Приложение будет на http://localhost:5173
+```npm run dev```  
+Приложение будет на http://localhost:5173 (необходим запущенный сервер).
 
 ### Технологии
 - **React 18**

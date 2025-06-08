@@ -16,6 +16,7 @@ const TaskCard = styled(Card)`
   margin: 2px;
   display: flex;
   border-radius: 8px;
+  cursor: pointer;
   .ant-card-body {
     display: flex;
     align-items: center;
