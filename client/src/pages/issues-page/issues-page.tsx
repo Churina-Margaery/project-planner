@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { Layout, Button, Row, Col, Input, Space, Card } from 'antd';
-import styled from 'styled-components';
-import { Navigation } from '../../components/header/navigation';
-import { TaskForm } from '../../components/task-form/task-form';
+import { useEffect, useState } from "react";
+import { Layout, Button, Row, Col, Input, Card, Spin, Typography } from "antd";
+import styled from "styled-components";
+import { Navigation } from "../../components/header/navigation";
+import { TaskForm } from "../../components/task-form/task-form";
+import { getTasks } from "../../services/api/tasks";
+import type { Task } from "../../services/api/types";
+import type { TaskFormValues } from "../../components/task-form/task-form";
 
 const { Content } = Layout;
 
@@ -10,7 +13,6 @@ const TaskCard = styled(Card)`
   margin-bottom: 16px;
   display: flex;
   border-radius: 8px;
-
   .ant-card-body {
     display: flex;
     align-items: center;
@@ -19,7 +21,6 @@ const TaskCard = styled(Card)`
     width: 100%;
     background: transparent;
   }
-
   &:hover,
   &:focus-within {
     border-color: var(--accent) !important;
@@ -27,15 +28,58 @@ const TaskCard = styled(Card)`
   }
 `;
 
+const TasksScrollArea = styled.div`
+  max-height: 60vh;
+  min-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 32px;
+`;
+
+const BottomBar = styled.div`
+  width: 100%;
+  padding-bottom: 10px;
+  display: flex;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+`;
+
 export default function IssuesPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [initialValues, setInitinalValues] = useState<Partial<TaskFormValues> | undefined>(undefined);
+  const [reloadKey, setReloadKey] = useState(0);
+  const reloadTasks = () => setReloadKey((k) => k + 1);
 
-  const data = ['Задача 1', 'Задача 2', 'Задача 3', 'Большая задача', 'Очень длинное название задачи Очень длинное название задачи'];
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const cardClickHandler = (task: Task) => {
+    setDrawerOpen(true);
+    setInitinalValues({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      boardId: task.boardId,
+      priority: task.priority,
+      status: task.status,
+      assigneeId: task.assignee?.id,
+      boardName: task.boardName,
+    });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    getTasks()
+      .then(setTasks)
+      .catch((e) => setError(e?.message || "Ошибка загрузки"))
+      .finally(() => setLoading(false));
+  }, [reloadKey]);
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      <Content style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
+      <Content style={{ padding: 24, maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", height: "100vh" }}>
         <Row gutter={16} style={{ marginBottom: 32 }}>
           <Col flex="auto">
             <Input.Search placeholder="Поиск" allowClear size="large" />
@@ -45,23 +89,32 @@ export default function IssuesPage() {
           </Col>
         </Row>
 
-        {data.map((item, i) => (
-          <TaskCard key={i} onClick={() => setDrawerOpen(true)}>
-            {item}
-          </TaskCard>
-        ))}
+        <TasksScrollArea>
+          {loading && <Spin />}
+          {error && <Typography.Text type="danger">{error}</Typography.Text>}
+          {!loading && !error && tasks.map((task) => (
+            <TaskCard key={task.id} onClick={() => cardClickHandler(task)}>
+              {task.title}
+            </TaskCard>
+          ))}
+        </TasksScrollArea>
 
-        <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: 32 }}>
+        <BottomBar>
           <Button type="primary" size="large" onClick={() => setDrawerOpen(true)}>
             Создать задачу
           </Button>
-        </Space>
+        </BottomBar>
       </Content>
 
       <TaskForm
+        key={drawerOpen + JSON.stringify(initialValues ?? {})}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={() => { }}
+        initialValues={initialValues}
+        onClose={() => {
+          setDrawerOpen(false);
+          setInitinalValues(undefined);
+          reloadTasks();
+        }}
         showGotoBoard
       />
     </Layout>
