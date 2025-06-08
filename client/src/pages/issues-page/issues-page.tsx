@@ -103,6 +103,8 @@ export default function IssuesPage() {
       .finally(() => setLoading(false));
   }, [reloadKey]);
 
+  console.log("issues-page", boards, filteredTasks);
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
@@ -148,7 +150,7 @@ export default function IssuesPage() {
                 style={{ minWidth: 140 }}
                 value={boardFilter}
                 onChange={v => setBoardFilter(v)}
-                options={boards.map(b => ({ value: b.id, label: b.name }))}
+                options={boards?.map(b => ({ value: b.id, label: b.name }))}
               />
             </div>
           </Col>
@@ -158,7 +160,7 @@ export default function IssuesPage() {
         <TasksScrollArea>
           {loading && <Spin />}
           {error && <Typography.Text type="danger">{error}</Typography.Text>}
-          {!loading && !error && filteredTasks.map((task) => (
+          {!loading && !error && filteredTasks?.map((task) => (
             <TaskCard key={task.id} onClick={() => cardClickHandler(task)}>
               {task.title}
             </TaskCard>
