@@ -95,9 +95,14 @@ export default function BoardPage() {
     setDrawerOpen(true);
   };
 
-  const todo = tasks.filter(t => t.status === 'Backlog');
-  const inProgress = tasks.filter(t => t.status === 'InProgress');
-  const done = tasks.filter(t => t.status === 'Done');
+  const todo = Array.isArray(tasks) ? tasks.filter(t => t.status === 'Backlog') : [];
+  const inProgress = Array.isArray(tasks) ? tasks.filter(t => t.status === 'InProgress') : [];
+  const done = Array.isArray(tasks) ? tasks.filter(t => t.status === 'Done') : [];
+  // const inProgress = tasks.filter(t => t.status === 'InProgress') ?? [];
+  // const done = tasks.filter(t => t.status === 'Done') ?? [];
+
+  console.log("board-page", done, inProgress);
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -111,21 +116,21 @@ export default function BoardPage() {
         {!loading && !error && (
           <Space align="start" size={16} style={{ display: 'flex' }}>
             <BoardColumn title="To do">
-              {todo.map((task) => (
+              {todo?.map((task) => (
                 <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>
               ))}
             </BoardColumn>
             <BoardColumn title="In progress">
-              {inProgress.map((task) => (
+              {inProgress?.map((task) => (
                 <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>
               ))}
             </BoardColumn>
             <BoardColumn title="Done">
-              {done.map((task) => (
+              {done?.map((task) => (
                 <TaskCard key={task.id} onClick={() => handleCardClick(task)}>
                   {task.title}
                 </TaskCard>

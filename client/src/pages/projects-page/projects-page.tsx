@@ -45,6 +45,7 @@ export default function BoardsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  console.log("proj-page", boards);
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
@@ -52,7 +53,7 @@ export default function BoardsPage() {
         {loading && <Spin />}
         {error && <Typography.Text type="danger">{error}</Typography.Text>}
 
-        {!loading && !error && boards.map((board) => (
+        {!loading && !error && boards && boards?.map((board) => (
           <BoardCard key={board.id}>
             <div>
               <div style={{ fontWeight: 600, fontSize: 18 }}>{board.name}</div>

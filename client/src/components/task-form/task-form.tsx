@@ -103,6 +103,8 @@ export const TaskForm: React.FC<Props> = ({
     }
   };
 
+  console.log("task-form", users, boards);
+
 
   return (
     <Drawer
@@ -127,11 +129,11 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Form.Item label="Проект" name="boardId" rules={[{ required: true, message: 'Выберите проект' }]}>
-          <Select disabled={isProjectLocked} placeholder="Выберите проект"
-            options={boards.map(b => ({
+          {boards && <Select disabled={isProjectLocked} placeholder="Выберите проект"
+            options={boards?.map(b => ({
               value: b.id,
               label: b.name
-            }))} />
+            }))} />}
         </Form.Item>
 
         <Form.Item label="Приоритет" name="priority" rules={[{ required: true, message: 'Выберите приоритет' }]}>
@@ -143,10 +145,10 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Form.Item label="Исполнитель" name="assigneeId" rules={[{ required: true, message: 'Выберите исполнителя' }]}>
-          <Select options={users.map(u => ({
+          {users && <Select options={users?.map(u => ({
             value: u.id,
             label: u.fullName || u.email
-          }))} />
+          }))} />}
         </Form.Item>
 
         <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
