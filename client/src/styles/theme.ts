@@ -22,7 +22,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .ant-btn-primary, .ant-tabs-ink-bar {
-    background: var(--accent) !important;
+    background: var(--accent-dark) !important;
     border: none !important;
   }
   

@@ -1,6 +1,7 @@
 import { Drawer, Form, Input, Select, Button, Space } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { updateTask, createTask } from '../../services/api/tasks';
 import { getBoards } from '../../services/api/boards';
@@ -62,9 +63,7 @@ export const TaskForm: React.FC<Props> = ({
   useEffect(() => {
     if (!open) return;
     form.resetFields();
-    // Показываем значения только если boards есть
     if (boards.length && initialValues) {
-      // Явно приведи к числу:
       form.setFieldsValue({
         ...initialValues,
         boardId: Number(initialValues.boardId),
@@ -77,6 +76,11 @@ export const TaskForm: React.FC<Props> = ({
   }, [open, initialValues, boards, form]);
 
 
+  const navigate = useNavigate();
+  const handleGotoBoard = () => {
+    navigate(`/board/${initialValues?.boardId}?task=${initialValues?.id}`);
+  };
+
   // Обработчик формы
   const handleFinish = async (values: TaskFormValues) => {
     setSaving(true);
@@ -84,7 +88,6 @@ export const TaskForm: React.FC<Props> = ({
       const boardId = values.boardId ?? initialValues?.boardId;
       const board = boards.find(b => b.id === boardId);
       const dataToSend = { ...values, boardId, boardName: board?.name ?? "" };
-      // console.log(initialValues, boardId, board, dataToSend)
       if (initialValues && initialValues.id) {
         console.log('upd', dataToSend)
         await updateTask(Number(initialValues.id), dataToSend);
@@ -119,11 +122,11 @@ export const TaskForm: React.FC<Props> = ({
           <Input />
         </Form.Item>
 
-        <Form.Item label="Описание" name="description">
+        <Form.Item label="Описание" name="description" rules={[{ required: true, message: 'Введите описание' }]}>
           <Input.TextArea rows={4} />
         </Form.Item>
 
-        <Form.Item label="Проект" name="boardId">
+        <Form.Item label="Проект" name="boardId" rules={[{ required: true, message: 'Выберите проект' }]}>
           <Select disabled={isProjectLocked} placeholder="Выберите проект"
             options={boards.map(b => ({
               value: b.id,
@@ -131,7 +134,7 @@ export const TaskForm: React.FC<Props> = ({
             }))} />
         </Form.Item>
 
-        <Form.Item label="Приоритет" name="priority">
+        <Form.Item label="Приоритет" name="priority" rules={[{ required: true, message: 'Выберите приоритет' }]}>
           <Select options={priorityOptions} />
         </Form.Item>
 
@@ -139,7 +142,7 @@ export const TaskForm: React.FC<Props> = ({
           <Select options={statusOptions} disabled={!isEditing} />
         </Form.Item>
 
-        <Form.Item label="Исполнитель" name="assigneeId">
+        <Form.Item label="Исполнитель" name="assigneeId" rules={[{ required: true, message: 'Выберите исполнителя' }]}>
           <Select options={users.map(u => ({
             value: u.id,
             label: u.fullName || u.email
@@ -147,7 +150,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {showGotoBoard && <NavLink to={`/board/${boardIdCur}`}>Перейти на доску</NavLink>}
+          {showGotoBoard && <Button onClick={handleGotoBoard}>Перейти на доску</Button>}
           <Button type="primary" htmlType="submit">{initialValues ? 'Обновить' : 'Создать'}</Button>
         </Space>
       </Form>

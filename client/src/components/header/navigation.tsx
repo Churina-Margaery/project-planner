@@ -1,4 +1,3 @@
-// src/components/NavigationBar.tsx
 import { Link, useLocation } from 'react-router-dom';
 import { Layout, Button } from 'antd';
 import styled from 'styled-components';
@@ -8,7 +7,7 @@ const { Header } = Layout;
 const NavLink = styled(Link) <{ $active?: boolean }>`
   font-size: 18px;
   font-weight: ${({ $active }) => ($active ? 600 : 400)};
-  color: ${({ $active }) => ($active ? 'var(--accent)' : 'inherit')};
+  color: ${({ $active }) => ($active ? 'var(--accent-dark)' : 'inherit')};
   margin-right: 16px;
 `;
 
