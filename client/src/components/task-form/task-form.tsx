@@ -37,6 +37,7 @@ export const TaskForm: React.FC<Props> = ({
   const [saving, setSaving] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [boards, setBoards] = useState<Board[]>([]);
+  const boardIdCur = initialValues?.boardId;
   const priorityOptions = [
     { value: 'Low', label: 'Low' },
     { value: 'Medium', label: 'Medium' },
@@ -47,6 +48,11 @@ export const TaskForm: React.FC<Props> = ({
     { value: 'InProgress', label: 'InProgress' },
     { value: 'Done', label: 'Done' },
   ];
+  const isEditing = !!initialValues && !!initialValues.id;
+  if (isEditing) {
+    console.log('edit', initialValues);
+  }
+  const isProjectLocked = projectLocked ?? isEditing;
 
   useEffect(() => {
     getUsers().then(setUsers);
@@ -54,33 +60,46 @@ export const TaskForm: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+    form.resetFields();
+    // Показываем значения только если boards есть
+    if (boards.length && initialValues) {
+      // Явно приведи к числу:
+      form.setFieldsValue({
+        ...initialValues,
+        boardId: Number(initialValues.boardId),
+      });
+      console.log('setFieldsValue:', initialValues, boards);
+    } else {
       form.setFieldsValue(initialValues || {});
+      console.log('fallback setFieldsValue:', initialValues, boards);
     }
-  }, [open, initialValues, form]);
+  }, [open, initialValues, boards, form]);
+
 
   // Обработчик формы
   const handleFinish = async (values: TaskFormValues) => {
     setSaving(true);
     try {
-      const board = boards.find(b => b.id === values.boardId);
-      console.log(board?.name);
-      const dataToSend = { ...values, boardName: board?.name ?? "" };
-      if (initialValues) {
+      const boardId = values.boardId ?? initialValues?.boardId;
+      const board = boards.find(b => b.id === boardId);
+      const dataToSend = { ...values, boardId, boardName: board?.name ?? "" };
+      // console.log(initialValues, boardId, board, dataToSend)
+      if (initialValues && initialValues.id) {
+        console.log('upd', dataToSend)
         await updateTask(Number(initialValues.id), dataToSend);
       } else {
+        console.log('cre', dataToSend)
         await createTask(dataToSend);
       }
-      console.log(3, values);
       onClose();
-      // TODO обновить задачи в родителе
     } catch (err) {
-      // обработать ошибку (например, message.error)
-      console.log(err.message);
+      console.log((err as Error).message);
     } finally {
       setSaving(false);
     }
   };
+
 
   return (
     <Drawer
@@ -93,7 +112,7 @@ export const TaskForm: React.FC<Props> = ({
       <Form
         layout="vertical"
         form={form}
-        initialValues={initialValues}
+        // initialValues={initialValues}
         onFinish={handleFinish}
       >
         <Form.Item label="Название" name="title" rules={[{ required: true, message: 'Введите название' }]}>
@@ -105,7 +124,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Form.Item label="Проект" name="boardId">
-          <Select disabled={projectLocked} placeholder="Выберите проект"
+          <Select disabled={isProjectLocked} placeholder="Выберите проект"
             options={boards.map(b => ({
               value: b.id,
               label: b.name
@@ -117,7 +136,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Form.Item label="Статус" name="status">
-          <Select options={statusOptions} />
+          <Select options={statusOptions} disabled={!isEditing} />
         </Form.Item>
 
         <Form.Item label="Исполнитель" name="assigneeId">
@@ -128,7 +147,7 @@ export const TaskForm: React.FC<Props> = ({
         </Form.Item>
 
         <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {showGotoBoard && <NavLink to={`/board/${1}`}>Перейти на доску</NavLink>}
+          {showGotoBoard && <NavLink to={`/board/${boardIdCur}`}>Перейти на доску</NavLink>}
           <Button type="primary" htmlType="submit">{initialValues ? 'Обновить' : 'Создать'}</Button>
         </Space>
       </Form>

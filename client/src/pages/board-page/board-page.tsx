@@ -47,7 +47,7 @@ export default function BoardPage() {
       id: task.id,
       title: task.title,
       description: task.description,
-      boardId: task.boardId,
+      boardId: Number(id),
       priority: task.priority,
       status: task.status,
       assigneeId: task.assignee?.id,
@@ -56,8 +56,9 @@ export default function BoardPage() {
   };
 
   const handleCreateClick = () => {
-    setDrawerOpen(true);
+    setInitialValues(undefined);
     setInitialValues({ boardId: Number(id) });
+    setDrawerOpen(true);
   };
 
   const todo = tasks.filter(t => t.status === 'Backlog');

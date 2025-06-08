@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Layout, Button, Row, Col, Input, Space, Card, Spin, Typography } from "antd";
+import { Layout, Button, Row, Col, Input, Card, Spin, Typography } from "antd";
 import styled from "styled-components";
 import { Navigation } from "../../components/header/navigation";
 import { TaskForm } from "../../components/task-form/task-form";
@@ -13,7 +13,6 @@ const TaskCard = styled(Card)`
   margin-bottom: 16px;
   display: flex;
   border-radius: 8px;
-
   .ant-card-body {
     display: flex;
     align-items: center;
@@ -22,12 +21,27 @@ const TaskCard = styled(Card)`
     width: 100%;
     background: transparent;
   }
-
   &:hover,
   &:focus-within {
     border-color: var(--accent) !important;
     box-shadow: 0 0 0 1px var(--accent);
   }
+`;
+
+const TasksScrollArea = styled.div`
+  max-height: 60vh;
+  min-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 32px;
+`;
+
+const BottomBar = styled.div`
+  width: 100%;
+  padding-bottom: 10px;
+  display: flex;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
 `;
 
 export default function IssuesPage() {
@@ -62,11 +76,10 @@ export default function IssuesPage() {
       .finally(() => setLoading(false));
   }, [reloadKey]);
 
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Navigation onCreateClick={() => setDrawerOpen(true)} />
-      <Content style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
+      <Content style={{ padding: 24, maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", height: "100vh" }}>
         <Row gutter={16} style={{ marginBottom: 32 }}>
           <Col flex="auto">
             <Input.Search placeholder="Поиск" allowClear size="large" />
@@ -76,22 +89,21 @@ export default function IssuesPage() {
           </Col>
         </Row>
 
-        {loading && <Spin />}
-        {error && (
-          <Typography.Text type="danger">{error}</Typography.Text>
-        )}
+        <TasksScrollArea>
+          {loading && <Spin />}
+          {error && <Typography.Text type="danger">{error}</Typography.Text>}
+          {!loading && !error && tasks.map((task) => (
+            <TaskCard key={task.id} onClick={() => cardClickHandler(task)}>
+              {task.title}
+            </TaskCard>
+          ))}
+        </TasksScrollArea>
 
-        {!loading && !error && tasks.map((task) => (
-          <TaskCard key={task.id} onClick={() => cardClickHandler(task)}>
-            {task.title}
-          </TaskCard>
-        ))}
-
-        <Space style={{ width: "100%", justifyContent: "flex-end", marginTop: 32 }}>
+        <BottomBar>
           <Button type="primary" size="large" onClick={() => setDrawerOpen(true)}>
             Создать задачу
           </Button>
-        </Space>
+        </BottomBar>
       </Content>
 
       <TaskForm
