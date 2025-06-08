@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout, Card, Spin, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 
 import { Navigation } from '../../components/header/navigation';
 import { TaskForm } from '../../components/task-form/task-form';
@@ -28,7 +27,7 @@ const BoardCard = styled(Card)`
 `;
 
 const StyledLink = styled(Link)`
-  margin-left: auto; // всегда прижимает к правому краю
+  margin-left: auto;
 `;
 
 export default function BoardsPage() {

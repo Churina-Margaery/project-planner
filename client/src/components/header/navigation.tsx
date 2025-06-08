@@ -1,4 +1,3 @@
-// src/components/NavigationBar.tsx
 import { Link, useLocation } from 'react-router-dom';
 import { Layout, Button } from 'antd';
 import styled from 'styled-components';

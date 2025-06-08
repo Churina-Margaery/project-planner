@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Layout, Button, Row, Col, Input, Card, Spin, Typography } from "antd";
 import styled from "styled-components";
+
 import { Navigation } from "../../components/header/navigation";
 import { TaskForm } from "../../components/task-form/task-form";
+import type { TaskFormValues } from "../../components/task-form/task-form";
 import { getTasks } from "../../services/api/tasks";
 import type { Task } from "../../services/api/types";
-import type { TaskFormValues } from "../../components/task-form/task-form";
 
 const { Content } = Layout;
 

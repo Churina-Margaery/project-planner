@@ -1,4 +1,3 @@
-// src/shared/api/tasks.ts
 import { api } from "./axios";
 import type { Task, TasksResponse } from './types';
 

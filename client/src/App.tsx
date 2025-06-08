@@ -1,11 +1,10 @@
-// src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import styled from 'styled-components';
+
 import ProjectsPage from '../src/pages/projects-page/projects-page';
 import BoardPage from '../src/pages/board-page/board-page';
 import IssuesPage from '../src/pages/issues-page/issues-page';
 import { GlobalStyle } from '../src/styles/theme';
-import styled from 'styled-components';
-
 
 const AppContainer = styled.div`
   min-height: 100vh;

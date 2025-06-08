@@ -1,4 +1,3 @@
-// src/components/BoardColumn.tsx
 import type { ReactNode } from 'react';
 import styled from 'styled-components';
 
