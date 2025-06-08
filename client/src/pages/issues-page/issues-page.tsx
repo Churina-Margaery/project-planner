@@ -13,6 +13,7 @@ const { Content } = Layout;
 
 const TaskCard = styled(Card)`
   margin-bottom: 16px;
+  margin: 2px;
   display: flex;
   border-radius: 8px;
   .ant-card-body {

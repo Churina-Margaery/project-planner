@@ -7,7 +7,7 @@ const { Header } = Layout;
 const NavLink = styled(Link) <{ $active?: boolean }>`
   font-size: 18px;
   font-weight: ${({ $active }) => ($active ? 600 : 400)};
-  color: ${({ $active }) => ($active ? 'var(--accent)' : 'inherit')};
+  color: ${({ $active }) => ($active ? 'var(--accent-dark)' : 'inherit')};
   margin-right: 16px;
 `;
 
